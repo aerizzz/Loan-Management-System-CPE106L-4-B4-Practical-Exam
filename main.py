@@ -6,9 +6,6 @@ import os
 import re
 from datetime import datetime
 
-# ==========================================
-# 1. MODEL LAYER
-# ==========================================
 class Loan:
     EMAIL_REGEX = re.compile(r"^[^@]+@[^@]+\.[^@]+$")
 
@@ -34,7 +31,6 @@ class Loan:
         self.due_date = self._calculate_due_date()
 
     def validate(self):
-        """Enforces domain constraints and data sanity."""
         if not self.borrower_name:
             raise ValueError("Borrower name cannot be empty.")
         if not self.EMAIL_REGEX.match(self.email):
@@ -47,11 +43,9 @@ class Loan:
             raise ValueError("Loan term must be at least 1 month.")
 
     def _calculate_due_date(self):
-        """Fast analytic one-month due date calculation without exception loops."""
         dt = datetime.strptime(self.approval_date, "%Y-%m-%d %H:%M:%S")
         year = dt.year + (dt.month // 12)
         month = (dt.month % 12) + 1
-        # Days in target month handling (clamps 29, 30, 31 to last valid day)
         leap = 1 if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0) else 0
         days_in_month = [0, 31, 28 + leap, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         day = min(dt.day, days_in_month[month])
@@ -104,7 +98,7 @@ class LoanDatabase:
 
     def __init__(self):
         self._loans = []
-        self._loan_map = {}  # O(1) index by loan_id
+        self._loan_map = {}  
         self.load_data()
 
     def load_data(self):
@@ -173,10 +167,6 @@ class LoanDatabase:
             if q in l.borrower_name.lower() or q in l.loan_id.lower() or q in l.email.lower()
         ]
 
-
-# ==========================================
-# 2. VIEW LAYER
-# ==========================================
 class LoanView:
     def __init__(self, root, controller):
         self.root = root
@@ -245,7 +235,6 @@ class LoanView:
         self.btn_submit = ttk.Button(left_panel, text="Process Loan", style="Primary.TButton", command=self.controller.handle_add_loan)
         self.btn_submit.pack(fill=tk.X, pady=(0, 15))
 
-        # Inspector Card
         card_border = tk.LabelFrame(
             left_panel, text=" Selected Loan Overview ", font=("Segoe UI", 9, "bold"),
             fg=self.secondary, bg=self.card_bg, bd=1, relief="solid", padx=10, pady=8
@@ -270,7 +259,6 @@ class LoanView:
                 bg=self.card_bg, fg=self.text_color, anchor="w"
             ).grid(row=r, column=c, sticky="w", padx=2, pady=2, columnspan=span)
 
-        # Right Panel
         data_frame = ttk.Frame(self.root, padding=20)
         data_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
@@ -284,14 +272,12 @@ class LoanView:
         ttk.Button(search_bar, text="Search", style="Primary.TButton", command=self.controller.handle_search).pack(side=tk.LEFT)
         ttk.Button(search_bar, text="Show All", style="Secondary.TButton", command=self.controller.refresh_table).pack(side=tk.LEFT, padx=(10, 0))
 
-        # Action Buttons
         action_bar = ttk.Frame(data_frame)
         action_bar.pack(side=tk.BOTTOM, fill=tk.X, pady=(15, 0))
         ttk.Button(action_bar, text="Edit Selected Loan", style="Secondary.TButton", command=self.controller.handle_edit_request).pack(side=tk.LEFT, padx=(0, 10))
         ttk.Button(action_bar, text="Log Monthly Payment", style="Success.TButton", command=self.controller.handle_payment).pack(side=tk.LEFT, padx=(0, 10))
         ttk.Button(action_bar, text="View Progress", style="Info.TButton", command=self.controller.handle_view_progress).pack(side=tk.LEFT)
 
-        # Treeview
         columns = ("id", "name", "total", "balance", "progress", "due", "status", "payment")
         self.tree = ttk.Treeview(data_frame, columns=columns, show="headings", height=15)
         
@@ -403,9 +389,6 @@ class LoanView:
         self.entry_term.current(1)
 
 
-# ==========================================
-# 3. CONTROLLER LAYER
-# ==========================================
 class LoanController:
     def __init__(self, root):
         self.db = LoanDatabase()
@@ -445,7 +428,6 @@ class LoanController:
             self.view.show_success(f"Loan {new_loan.loan_id} approved for {new_loan.borrower_name}.")
             self.view.clear_form()
             
-            # Fast append directly to Treeview instead of re-rendering whole list
             item_id = self.view.tree.insert("", tk.END, values=self._format_loan_row(new_loan))
             self.view.tree.selection_set(item_id)
             self.view.tree.see(item_id)
@@ -502,7 +484,6 @@ class LoanController:
             self.view.open_progress_dialog(loan)
 
     def _update_selected_tree_row(self, loan):
-        """Updates just the active row without rebuilding the whole table."""
         selection = self.view.tree.selection()
         if selection:
             self.view.tree.item(selection[0], values=self._format_loan_row(loan))
