@@ -212,7 +212,7 @@ class LoanView:
         left_panel = ttk.Frame(self.root, padding=20)
         left_panel.pack(side=tk.LEFT, fill=tk.Y)
 
-        ttk.Label(left_panel, text="Loan Application", font=("Segoe UI", 15, "bold"), foreground=self.secondary).pack(pady=(0, 10))
+        ttk.Label(left_panel, text="CardiLoan", font=("Segoe UI", 15, "bold"), foreground=self.secondary).pack(pady=(0, 10))
 
         fields = [
             ("Borrower Name:", "entry_name", ttk.Entry),
