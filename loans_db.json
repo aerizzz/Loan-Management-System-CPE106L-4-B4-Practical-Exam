@@ -1,0 +1,38 @@
+[
+    {
+        "loan_id": "LN-1EFF63",
+        "borrower_name": "Aldwyn Umali",
+        "email": "aj@system.local",
+        "principal": 50000.0,
+        "interest_rate": 5.0,
+        "months": 12,
+        "approval_date": "2026-09-26 09:56:44"
+    },
+    {
+        "loan_id": "LN-052BFD",
+        "borrower_name": "Christian Yago",
+        "email": "ca@system.local",
+        "principal": 150000.0,
+        "interest_rate": 4.5,
+        "months": 24,
+        "approval_date": "2026-09-26 09:56:44"
+    },
+    {
+        "loan_id": "LN-05C3D8",
+        "borrower_name": "Federico Tolentino III",
+        "email": "fdt@system.local",
+        "principal": 75000.0,
+        "interest_rate": 6.0,
+        "months": 36,
+        "approval_date": "2026-09-26 09:56:44"
+    },
+    {
+        "loan_id": "LN-16C717",
+        "borrower_name": "Wowowowwo",
+        "email": "oaeaeaea@ewan.com",
+        "principal": 1000.0,
+        "interest_rate": 500.0,
+        "months": 12,
+        "approval_date": "2026-09-26 10:06:55"
+    }
+]
